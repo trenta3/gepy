@@ -60,31 +60,22 @@ class Gene:
         """
         Evaluate the expression expressed from the gene.
         """
-        return self.tofunction()(**kwargs)
+        stack = [kwargs.get(element, element) for element in self.gene_tail[-1::-1]]
+        for element in self.gene_head[-1::-1]:
+            if element in self.tree_terminals:
+                stack.append(kwargs.get(element, element))
+            else:
+                num = element._arity
+                stack, args = stack[0:-num], stack[-1:-num-1:-1]
+                result = element(*args)
+                stack.append(result)
+        return stack[-1]
 
     def tofunction(self):
         """
         Returns a python function that evaluates the current gene.
         """
-        def eval_gene(**kwargs):
-            gene = self.gene_head + self.gene_tail
-            stack = []
-            for element in gene[-1::-1]:
-                if element in self.tree_terminals:
-                    if kwargs.get(element, None) is None:
-                        raise EvaluationError("The passed arguments should contain the key %s" % element)
-                    stack.append(kwargs[element])
-                elif element in self.tree_functions:
-                    num = arity(element)
-                    args = []
-                    for _ in range(num):
-                        args.append(stack.pop())
-                    result = element(*args)
-                    stack.append(result)
-                else:
-                    raise EvaluationError("Unknown something in gene: %s" % repr(element))
-            return stack.pop()
-        return eval_gene
+        return self.__call__
 
     def mutate(self, rate):
         for idx in range(self.head_length):

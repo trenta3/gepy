@@ -6,8 +6,10 @@ def arity(fn):
     """
     Function that returns the arity of a function.
     """
+    if not hasattr(fn, "_arity"):
+        fn._arity = len(getargspec(fn)[0])
+    return fn._arity
     # return fn.func_code.co_argcount
-    return len(getargspec(fn)[0])
 
 def list_choose_rand(fromlist, num):
     """
