@@ -25,7 +25,7 @@ class DataPoint:
 class Regression(StandardChromosome):
     REWARD = 1000.0
     tree_functions = addition, subtraction, multiplication, division
-    tree_terminals = ('x',)
+    tree_terminals = ('x', 2, 3)
 
     def _fitness(self):
         total = 0

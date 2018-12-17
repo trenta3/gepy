@@ -30,7 +30,7 @@ class Gene:
             self.gene_tail = list_choose_rand(self.tree_terminals, self.tail_length)
 
     def __repr__(self):
-        get_symbol = lambda x: x._symbol if x in self.tree_functions else x
+        get_symbol = lambda x: x._symbol if x in self.tree_functions else str(x)
         return ".".join(map(get_symbol, self.gene_head + self.gene_tail))
 
     def __len__(self):
@@ -52,7 +52,7 @@ class Gene:
     
     def fromstring(self, string):
         funcdict = self.funcdict()
-        thelist = list(map(lambda x: funcdict[x], string.split(".")))
+        thelist = list(map(lambda x: funcdict.get(x, int(x)), string.split(".")))
         self.gene_head = thelist[:self.head_length]
         self.gene_tail = thelist[self.head_length:]
     
