@@ -1,0 +1,122 @@
+from gepy.utils import arity, list_choose_rand, choose_rand
+from gepy.exceptions import InitializationError, EvaluationError
+from random import random
+from math import floor
+
+class Gene:
+    """
+    Fundamental class to handle all different kind of genes.
+    """
+    def __init__(self, head_length, tree_functions, tree_terminals):
+        self.head_length = head_length
+        self.tree_functions = list(tree_functions)
+        self.tree_terminals = list(tree_terminals)
+        max_arity = max([arity(fn) for fn in tree_functions])
+        self.tail_length = head_length * (max_arity - 1) + 1
+
+    def initialize(self, value=None):
+        """
+        Perform initialization of the gene.
+        If 'value' is a list of tree_functions and tree_terminals it will be copied into the gene, otherwise a random initialization will be performed.
+        """
+        if value is not None:
+            if len(value) == self.head_length + self.tail_length:
+                self.gene_head = value[:self.head_length]
+                self.gene_tail = value[self.head_length:]
+            else:
+                raise InitializationError("The value given to the gene doesn't have the required length.")
+        else:
+            self.gene_head = list_choose_rand(self.tree_functions + self.tree_terminals, self.head_length)
+            self.gene_tail = list_choose_rand(self.tree_terminals, self.tail_length)
+
+    def __repr__(self):
+        get_symbol = lambda x: x._symbol if x in self.tree_functions else x
+        return ".".join(map(get_symbol, self.gene_head + self.gene_tail))
+
+    def __len__(self):
+        """
+        Returns the length of the tree represented by the gene.
+        """
+        # Calculated as gene_total_length - values_remaining_on_the_stack + 1
+        gene = self.gene_head + self.gene_tail
+        stack_elements = 0
+        for element in gene[-1::-1]:
+            if element in self.tree_terminals:
+                stack_elements += 1
+            elif element in self.tree_functions:
+                stack_elements -= (arity(element) - 1)
+        return self.head_length + self.tail_length - stack_elements + 1
+    
+    def funcdict(self):
+        return {fn._symbol: fn for fn in self.gene_head + self.gene_tail}
+    
+    def fromstring(self, string):
+        funcdict = self.funcdict()
+        thelist = list(map(lambda x: funcdict[x], string.split(".")))
+        self.gene_head = thelist[:self.head_length]
+        self.gene_tail = thelist[self.head_length:]
+    
+    def __call__(self, **kwargs):
+        """
+        Evaluate the expression expressed from the gene.
+        """
+        return self.tofunction()(**kwargs)
+
+    def tofunction(self):
+        """
+        Returns a python function that evaluates the current gene.
+        """
+        def eval_gene(**kwargs):
+            gene = self.gene_head + self.gene_tail
+            stack = []
+            for element in gene[-1::-1]:
+                if element in self.tree_terminals:
+                    if kwargs.get(element, None) is None:
+                        raise EvaluationError("The passed arguments should contain the key %s" % element)
+                    stack.append(kwargs[element])
+                elif element in self.tree_functions:
+                    num = arity(element)
+                    args = []
+                    for _ in range(num):
+                        args.append(stack.pop())
+                    result = element(*args)
+                    stack.append(result)
+                else:
+                    raise EvaluationError("Unknown something in gene: %s" % repr(element))
+            return stack.pop()
+        return eval_gene
+
+    def mutate(self, rate):
+        for idx in range(self.head_length):
+            if random() <= rate:
+                self.gene_head[idx] = choose_rand(self.tree_functions + self.tree_terminals)
+        for idx in range(self.tail_length):
+            if random() <= rate:
+                self.gene_tail[idx] = choose_rand(self.tree_terminals)
+
+    def inversion(self):
+        initial_head_point = floor(random() * self.head_length)
+        final_head_point = floor(random() * self.head_length)
+        start = min(initial_head_point, final_head_point)
+        end = max(initial_head_point, final_head_point)
+        self.gene_head[start:end] = self.gene_head[start:end][-1::-1]
+                
+# TODO: RNC Genes, ADF Genes
+
+class StandardGene(Gene):
+    """
+    Class for standard genes, i.e. expression trees.
+    
+    Evolution operators implemented:
+    - Replication
+    - Mutation
+    - Inversion
+    - IS Transposition
+    - Reproduction
+    - RIS Transposition
+    - Gene Transposition
+    - One-point Recombination
+    - Two-point Recombination
+    - Gene Recombination
+    """
+    pass
