@@ -38,7 +38,7 @@ class Cancer(StandardChromosome):
         total = 0
         for x in dataset:
             try:
-                guess = self(**x)
+                guess = self(dictionary=x)
                 total += 1 if guess[0] == x['cls'] / 2 - 1 else 0
             except (ZeroDivisionError, ValueError, TypeError):
                 pass

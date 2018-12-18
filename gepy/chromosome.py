@@ -31,10 +31,10 @@ class StandardChromosome:
         """
         return False
     
-    def __call__(self, **kwargs):
-        args = []
-        for gene in self.genes:
-            args.append(gene(**kwargs))
+    def __call__(self, dictionary=None, **kwargs):
+        if dictionary is None:
+            dictionary = kwargs
+        args = map(lambda g: g(dictionary), self.genes)
         return self.linking_function(*args)
 
     def __len__(self):

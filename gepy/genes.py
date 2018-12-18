@@ -71,11 +71,11 @@ class Gene:
                 results.append(element(*args))
         return results, sp
         
-    def __call__(self, **kwargs):
+    def __call__(self, dictionary):
         """
         Evaluate the expression expressed from the gene.
         """
-        return self.valu(kwargs=kwargs)[0][0]
+        return self.valu(kwargs=dictionary)[0][0]
 
     def tofunction(self):
         """
