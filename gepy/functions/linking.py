@@ -20,3 +20,11 @@ def min_linker(*args):
 
 def argmin_linker(*args):
     return min(enumerate(args), key=lambda x: x[1])
+
+def tuple_linker(*args):
+    return tuple(args)
+
+def list_linker(*args):
+    return list(args)
+
+
