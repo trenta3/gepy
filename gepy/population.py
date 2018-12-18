@@ -11,8 +11,8 @@ class StandardPopulation:
     default_rates = dict(
         replication=0,
         mutation=0.05,
-        inversion=0.01,
-        IS_transposition=0,
+        inversion=0.1,
+        IS_transposition=0.1,
         RIS_transposition=0,
         gene_transposition=0,
         one_point_recombination=0,
@@ -114,3 +114,9 @@ class StandardPopulation:
         for chromosome in self.population[1:]:
             chromosome.inversion(rate, rnd)
         
+    def action_IS_transposition(self, rate, rnd):
+        """
+        Transposes a random sequence at a random point of a chromosome...
+        """
+        for chromosome in self.population[1:]:
+            chromosome.IS_transposition(rate, rnd)

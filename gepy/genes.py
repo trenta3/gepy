@@ -2,6 +2,7 @@ from gepy.utils import arity, list_choose_rand, choose_rand
 from gepy.exceptions import InitializationError, EvaluationError
 from random import random
 from math import floor
+from copy import deepcopy
 
 class Gene:
     """
@@ -89,9 +90,24 @@ class Gene:
         initial_head_point = floor(random() * self.head_length)
         final_head_point = floor(random() * self.head_length)
         start = min(initial_head_point, final_head_point)
-        end = max(initial_head_point, final_head_point)
+        end = max(initial_head_point, final_head_point) + 1
         self.gene_head[start:end] = self.gene_head[start:end][-1::-1]
-                
+
+    def IS_transposition(self):
+        # NOTE: This only takes a part of the tail and copies it somewhere else
+        initial_tail_point = floor(random() * self.tail_length)
+        final_tail_point = floor(random() * self.tail_length)
+        start = min(initial_tail_point, final_tail_point)
+        end = max(initial_tail_point, final_tail_point)
+        target_point = floor(random() * (self.head_length + self.tail_length))
+        totalgene = self.gene_head + self.gene_tail
+        if target_point + end - start > self.head_length + self.tail_length:
+            end = self.head_length + self.tail_length - target_point + start
+        totalgene[target_point:target_point + end - start] = deepcopy(self.gene_tail[start:end])
+        self.gene_head = totalgene[:self.head_length]
+        self.gene_tail = totalgene[self.head_length:self.head_length + self.tail_length + 1]
+        assert len(self.gene_tail) == self.tail_length
+        
 # TODO: RNC Genes, ADF Genes
 
 class StandardGene(Gene):
