@@ -14,7 +14,7 @@ class StandardPopulation:
         inversion=0.1,
         IS_transposition=0.1,
         RIS_transposition=0.1,
-        gene_transposition=0,
+        gene_transposition=0.1,
         one_point_recombination=0,
         two_point_recombination=0,
         gene_recombination=0
@@ -127,4 +127,10 @@ class StandardPopulation:
         """
         for chromosome in self.population[1:]:
             chromosome.RIS_transposition(rate, rnd)
-        
+
+    def action_gene_transposition(self, rate, rnd):
+        """
+        Transposes the genes in some chromosomes
+        """
+        for chromosome in self.population[1:]:
+            chromosome.gene_transposition(rate, rnd)

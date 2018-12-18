@@ -2,6 +2,7 @@ from random import random
 from math import floor
 from .genes import Gene
 from .exceptions import ImplementationError
+from copy import deepcopy
 
 class StandardChromosome:
     def __init__(self, gene_number, genes_head, tree_functions=None, tree_terminals=None, linking_function=None):
@@ -72,9 +73,18 @@ class StandardChromosome:
     def RIS_transposition(self, rate, rnd):
         if random() <= rate:
             gene_to_transpose = floor(self.gene_number * random())
-            self.genes[gene_to_transpose].RIS_transposition()
+            if self.genes[gene_to_transpose].RIS_transposition():
+                self.modified_round = rnd
+                return True
+        return False
+
+    def gene_transposition(self, rate, rnd):
+        if random() <= rate:
+            gene_to_transpose = floor(self.gene_number * random())
+            self.genes[0] = deepcopy(self.genes[gene_to_transpose])
             self.modified_round = rnd
             return True
+        return False
 
     @property
     def modified(self):
