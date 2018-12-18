@@ -69,6 +69,13 @@ class StandardChromosome:
             self.modified_round = rnd
             return True
 
+    def RIS_transposition(self, rate, rnd):
+        if random() <= rate:
+            gene_to_transpose = floor(self.gene_number * random())
+            self.genes[gene_to_transpose].RIS_transposition()
+            self.modified_round = rnd
+            return True
+
     @property
     def modified(self):
         return self.modified_round

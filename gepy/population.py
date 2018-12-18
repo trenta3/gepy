@@ -13,7 +13,7 @@ class StandardPopulation:
         mutation=0.05,
         inversion=0.1,
         IS_transposition=0.1,
-        RIS_transposition=0,
+        RIS_transposition=0.1,
         gene_transposition=0,
         one_point_recombination=0,
         two_point_recombination=0,
@@ -120,3 +120,11 @@ class StandardPopulation:
         """
         for chromosome in self.population[1:]:
             chromosome.IS_transposition(rate, rnd)
+
+    def action_RIS_transposition(self, rate, rnd):
+        """
+        Transposes a random sequence starting from a function at the root...
+        """
+        for chromosome in self.population[1:]:
+            chromosome.RIS_transposition(rate, rnd)
+        

@@ -107,6 +107,23 @@ class Gene:
         self.gene_head = totalgene[:self.head_length]
         self.gene_tail = totalgene[self.head_length:self.head_length + self.tail_length + 1]
         assert len(self.gene_tail) == self.tail_length
+
+    def RIS_transposition(self):
+        initial_head_point = floor(random() * self.head_length)
+        while initial_head_point < self.head_length:
+            if self.gene_head[initial_head_point] in self.tree_functions:
+                break
+            initial_head_point += 1
+        else:
+            # No function found, we return
+            return False
+        # We are on a function site
+        totalgene = self.gene_head + self.gene_tail
+        final_point = initial_head_point + floor(random() * (self.head_length + self.tail_length - initial_head_point))
+        totalgene[:final_point - initial_head_point] = deepcopy(totalgene[initial_head_point:final_point])
+        self.gene_head = totalgene[:self.head_length]
+        self.gene_tail = totalgene[self.head_length:self.head_length + self.tail_length + 1]
+        assert len(self.gene_tail) == self.tail_length
         
 # TODO: RNC Genes, ADF Genes
 
