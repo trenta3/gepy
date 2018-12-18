@@ -56,21 +56,26 @@ class Gene:
         thelist = list(map(lambda x: funcdict.get(x, int(x)), string.split(".")))
         self.gene_head = thelist[:self.head_length]
         self.gene_tail = thelist[self.head_length:]
-    
+
+    def valu(self, kwargs, sp=0, collect=1):
+        # PERFORMANCE: We evaluate starting from the start of the gene
+        results = []
+        while collect > 0:
+            element = self.gene_head[sp] if sp < self.head_length else self.gene_tail[sp - self.head_length]
+            collect -= 1
+            sp += 1
+            if element in self.tree_terminals:
+                results.append(kwargs.get(element, element))
+            else:
+                args, sp = self.valu(kwargs, sp=sp, collect=element._arity)
+                results.append(element(*args))
+        return results, sp
+        
     def __call__(self, **kwargs):
         """
         Evaluate the expression expressed from the gene.
         """
-        stack = [kwargs.get(element, element) for element in self.gene_tail[-1::-1]]
-        for element in self.gene_head[-1::-1]:
-            if element in self.tree_terminals:
-                stack.append(kwargs.get(element, element))
-            else:
-                num = element._arity
-                stack, args = stack[0:-num], stack[-1:-num-1:-1]
-                result = element(*args)
-                stack.append(result)
-        return stack[-1]
+        return self.valu(kwargs=kwargs)[0][0]
 
     def tofunction(self):
         """
