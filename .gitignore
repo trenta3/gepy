@@ -1,3 +1,6 @@
 __pycache__/
 venv/
-
+*.so
+*.c
+*.egg-info/
+build/

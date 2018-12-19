@@ -1,3 +1,4 @@
+# cython: language_level = 3
 """
 Linking functions used in multigenic chromosomes.
 """
@@ -6,8 +7,10 @@ from operator import mul
 def sum_linker(*args):
     return sum(args)
 
+treduce = lambda op, lst, st: st if len(lst) == 0 else treduce(op, lst[1:], op(lst[0], st))
+
 def multiply_linker(*args):
-    return reduce(mul, args, 1)
+    return treduce(mul, args, 1)
 
 def max_linker(*args):
     return max(args)
