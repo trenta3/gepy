@@ -30,4 +30,5 @@ def tuple_linker(*args):
 def list_linker(*args):
     return list(args)
 
-
+def append_linker(*args):
+    return [x for lst in args for x in lst]

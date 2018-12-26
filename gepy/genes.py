@@ -4,6 +4,9 @@ from random import random
 from math import floor
 from copy import deepcopy
 
+class ReturnValue(Exception):
+    pass
+
 class Gene:
     """
     Fundamental class to handle all different kind of genes.
@@ -75,7 +78,10 @@ class Gene:
         """
         Evaluate the expression expressed from the gene.
         """
-        return self.valu(kwargs=dictionary)[0][0]
+        try:
+            return self.valu(kwargs=dictionary)[0][0]
+        except ReturnValue as e:
+            return e.args[0]
 
     def tofunction(self):
         """
