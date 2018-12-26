@@ -52,3 +52,13 @@ def nop(stack):
 @symbol("ret")
 def ret(stack):
     raise ReturnValue(stack[-1])
+
+@symbol("swap3")
+def swap3(stack):
+    a = stack.pop()
+    b = stack.pop()
+    c = stack.pop()
+    stack.append(a)
+    stack.append(b)
+    stack.append(c)
+    return stack
