@@ -10,7 +10,7 @@ __email__ = "dario.balboni.96+gepy@gmail.com"
 __copyright__ = "Copyright 2018 Dario Balboni"
 __license__ = "GPLv3"
 __status__ = "development"
-__version__ = "0.2"
+__version__ = "0.3"
 
 projectName = "gepy"
 shortDescription = "Generative Expression Programming for Python"
@@ -55,9 +55,9 @@ def build_extension():
         of the files if need be.
     """
     extensions = []
-    files = find_pyx() + find_py()
+    files = find_pyx('gepy') + find_py('gepy')
     for file in files:
-        source = cythonize(file)
+        source = cythonize(file, compiler_directives={'language_level' : "3"})
         extensions += source
     return extensions
 

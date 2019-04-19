@@ -32,3 +32,4 @@ def list_linker(*args):
 
 def append_linker(*args):
     return [x for lst in args for x in lst]
+

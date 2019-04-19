@@ -20,7 +20,7 @@ class StandardPopulation:
         gene_recombination=0
     )
     
-    def __init__(self, chromosomecls, population_size, chromosome_genes, genes_head, tree_functions, tree_terminals, linking_function, selection_strategy=RouletteWheelSelection(), chromosomes=None, **kwargs):
+    def __init__(self, chromosomecls, population_size, chromosome_genes, genes_head, tree_functions, tree_terminals, linking_function, selection_strategy=RouletteWheelSelection(), chromosomes=None, prefer_functions=0, **kwargs):
         self.current_round = 0
         self.solved = False
         self.population_size = population_size
@@ -30,7 +30,7 @@ class StandardPopulation:
                 raise InitializationError("The given chromosomes' lenght is not the population size")
             self.population = chromosomes
         else:
-            self.population = [chromosomecls(gene_number=chromosome_genes, genes_head=genes_head, tree_functions=tree_functions, tree_terminals=tree_terminals, linking_function=linking_function)
+            self.population = [chromosomecls(gene_number=chromosome_genes, genes_head=genes_head, tree_functions=tree_functions, tree_terminals=tree_terminals, linking_function=linking_function, prefer_functions=prefer_functions)
                                for _ in range(population_size)]
         for attr, default in StandardPopulation.default_rates.items():
             self.__dict__[attr] = default if not attr in kwargs else kwargs[attr]

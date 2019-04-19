@@ -1,4 +1,4 @@
-from gepy.utils import arity, list_choose_rand, choose_rand
+from gepy.utils import arity, list_choose_rand, choose_rand, list_choose_rand_with_bias, choose_rand_with_bias
 from gepy.exceptions import InitializationError, EvaluationError
 from random import random
 from math import floor
@@ -11,8 +11,9 @@ class Gene:
     """
     Fundamental class to handle all different kind of genes.
     """
-    def __init__(self, head_length, tree_functions, tree_terminals):
+    def __init__(self, head_length, tree_functions, tree_terminals, prefer_functions=0):
         self.head_length = head_length
+        self.prefer_functions = prefer_functions
         self.tree_functions = list(tree_functions)
         self.tree_terminals = list(tree_terminals)
         max_arity = max([arity(fn) for fn in tree_functions])
@@ -30,7 +31,7 @@ class Gene:
             else:
                 raise InitializationError("The value given to the gene doesn't have the required length.")
         else:
-            self.gene_head = list_choose_rand(self.tree_functions + self.tree_terminals, self.head_length)
+            self.gene_head = list_choose_rand_with_bias(self.tree_functions, self.tree_terminals, self.head_length, self.prefer_functions)
             self.gene_tail = list_choose_rand(self.tree_terminals, self.tail_length)
 
     def __repr__(self):
@@ -92,7 +93,7 @@ class Gene:
     def mutate(self, rate):
         for idx in range(self.head_length):
             if random() <= rate:
-                self.gene_head[idx] = choose_rand(self.tree_functions + self.tree_terminals)
+                self.gene_head[idx] = choose_rand_with_bias(self.tree_functions, self.tree_terminals, self.prefer_functions)
         for idx in range(self.tail_length):
             if random() <= rate:
                 self.gene_tail[idx] = choose_rand(self.tree_terminals)

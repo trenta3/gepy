@@ -5,15 +5,16 @@ from .exceptions import ImplementationError
 from copy import deepcopy
 
 class StandardChromosome:
-    def __init__(self, gene_number, genes_head, tree_functions=None, tree_terminals=None, linking_function=None):
+    def __init__(self, gene_number, genes_head, tree_functions=None, tree_terminals=None, linking_function=None, prefer_functions=0):
         self._cantchange = False
         self.modified_round = 0
         self.gene_number = gene_number
         self.genes_head = genes_head
+        self.prefer_functions = prefer_functions
         self.linking_function = linking_function if linking_function is not None else self.__class__.linking_function
         self.tree_functions = tree_functions if tree_functions is not None else self.__class__.tree_functions
         self.tree_terminals = tree_terminals if tree_terminals is not None else self.__class__.tree_terminals
-        self.genes = [Gene(head_length=genes_head, tree_functions=tree_functions, tree_terminals=tree_terminals)
+        self.genes = [Gene(head_length=genes_head, tree_functions=tree_functions, tree_terminals=tree_terminals, prefer_functions=prefer_functions)
                       for _ in range(gene_number)]
         for gene in self.genes:
             gene.initialize()
